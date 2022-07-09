@@ -25,6 +25,7 @@ open import Algebra.Properties.Semigroup semigroup public
 ------------------------------------------------------------------------------
 -- Properties
 
+-- Commutative semigroup is medial
 interchange : Interchangable _∙_ _∙_
 interchange a b c d = begin
   (a ∙ b) ∙ (c ∙ d)  ≈⟨  assoc a b (c ∙ d) ⟩
@@ -132,3 +133,25 @@ xy∙z≈yz∙x x y z =  trans (xy∙z≈y∙zx x y z) (sym (assoc y z x))
 
 xy∙z≈zx∙y :  ∀ x y z → (x ∙ y) ∙ z ≈ (z ∙ x) ∙ y
 xy∙z≈zx∙y x y z =  trans (xy∙z≈z∙xy x y z) (sym (assoc z x y))
+
+------------------------------------------------------------------------------
+-- commutative semigroup is left semiMedial
+xx∙yz≈xy∙xz : ∀ x y z → (x ∙ x) ∙ (y ∙ z) ≈ (x ∙ y) ∙ (x ∙ z)
+xx∙yz≈xy∙xz x y z = begin
+  (x ∙ x) ∙ (y ∙ z)  ≈⟨  assoc x x (y ∙ z) ⟩
+  x ∙ (x ∙ (y ∙ z)) ≈⟨ ∙-congˡ (sym (assoc x y z)) ⟩
+  x ∙ ((x ∙ y) ∙ z) ≈⟨ ∙-congˡ (∙-congʳ (comm x y)) ⟩
+  x ∙ ((y ∙ x) ∙ z) ≈⟨ ∙-congˡ (assoc y x z) ⟩
+  x ∙ (y ∙ (x ∙ z)) ≈⟨ sym (assoc x y ((x ∙ z))) ⟩
+  (x ∙ y) ∙ (x ∙ z)  ∎
+
+------------------------------------------------------------------------------
+-- commutative semigroup is right semiMedial
+yz∙xx≈yx∙zx : ∀ x y z → (y ∙ z) ∙ (x ∙ x) ≈ (y ∙ x) ∙ (z ∙ x)
+yz∙xx≈yx∙zx x y z = begin
+  (y ∙ z) ∙ (x ∙ x)  ≈⟨ assoc y z (x ∙ x) ⟩
+  y ∙ (z ∙ (x ∙ x)) ≈⟨ ∙-congˡ (sym (assoc z x x)) ⟩
+  y ∙ ((z ∙ x) ∙ x) ≈⟨ ∙-congˡ (∙-congʳ (comm z x)) ⟩
+  y ∙ ((x ∙ z) ∙ x) ≈⟨ ∙-congˡ (assoc x z x) ⟩
+  y ∙ (x ∙ (z ∙ x)) ≈⟨ sym (assoc y x ((z ∙ x))) ⟩
+  (y ∙ x) ∙ (z ∙ x)  ∎
