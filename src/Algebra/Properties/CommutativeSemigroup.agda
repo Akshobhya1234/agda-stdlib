@@ -135,10 +135,17 @@ xy∙z≈zx∙y :  ∀ x y z → (x ∙ y) ∙ z ≈ (z ∙ x) ∙ y
 xy∙z≈zx∙y x y z =  trans (xy∙z≈z∙xy x y z) (sym (assoc z x y))
 
 ------------------------------------------------------------------------------
+-- commutative semigroup has Jordan identity
+jordanIdentity : ∀ x y → (x ∙ y) ∙ (x ∙ x) ≈ x ∙ (y ∙ (x ∙ x))
+jordanIdentity x y = begin
+  (x ∙ y) ∙ (x ∙ x) ≈⟨ assoc x y ((x ∙ x)) ⟩
+  x ∙ (y ∙ (x ∙ x)) ∎
+
+------------------------------------------------------------------------------
 -- commutative semigroup is left semiMedial
 xx∙yz≈xy∙xz : ∀ x y z → (x ∙ x) ∙ (y ∙ z) ≈ (x ∙ y) ∙ (x ∙ z)
 xx∙yz≈xy∙xz x y z = begin
-  (x ∙ x) ∙ (y ∙ z)  ≈⟨  assoc x x (y ∙ z) ⟩
+  (x ∙ x) ∙ (y ∙ z)  ≈⟨ assoc x x (y ∙ z) ⟩
   x ∙ (x ∙ (y ∙ z)) ≈⟨ ∙-congˡ (sym (assoc x y z)) ⟩
   x ∙ ((x ∙ y) ∙ z) ≈⟨ ∙-congˡ (∙-congʳ (comm x y)) ⟩
   x ∙ ((y ∙ x) ∙ z) ≈⟨ ∙-congˡ (assoc y x z) ⟩
