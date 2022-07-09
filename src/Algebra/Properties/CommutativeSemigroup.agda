@@ -155,3 +155,14 @@ yz∙xx≈yx∙zx x y z = begin
   y ∙ ((x ∙ z) ∙ x) ≈⟨ ∙-congˡ (assoc x z x) ⟩
   y ∙ (x ∙ (z ∙ x)) ≈⟨ sym (assoc y x ((z ∙ x))) ⟩
   (y ∙ x) ∙ (z ∙ x)  ∎
+
+------------------------------------------------------------------------------
+-- commutative semigroup is middle semiMedial
+xy∙zx≈xz∙yx : ∀ x y z → (x ∙ y) ∙ (z ∙ x) ≈ (x ∙ z) ∙ (y ∙ x)
+xy∙zx≈xz∙yx x y z = begin
+  (x ∙ y) ∙ (z ∙ x) ≈⟨ assoc x y ((z ∙ x)) ⟩
+  x ∙ (y ∙ (z ∙ x)) ≈⟨ ∙-congˡ (sym (assoc y z x)) ⟩ 
+  x ∙ ((y ∙ z) ∙ x) ≈⟨ ∙-congˡ (∙-congʳ (comm y z)) ⟩
+  x ∙ ((z ∙ y) ∙ x) ≈⟨ ∙-congˡ ( assoc z y x) ⟩
+  x ∙ (z ∙ (y ∙ x)) ≈⟨ sym (assoc x z ((y ∙ x))) ⟩
+  (x ∙ z) ∙ (y ∙ x) ∎
