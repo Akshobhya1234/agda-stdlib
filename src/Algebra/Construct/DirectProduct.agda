@@ -105,6 +105,48 @@ magma M N = record
     }
   } where module M = Magma M; module N = Magma N
 
+idempotentMagma : IdempotentMagma a ℓ₁ → IdempotentMagma b ℓ₂ → IdempotentMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
+idempotentMagma G H = record
+  { isIdempotentMagma = record
+    { isMagma = Magma.isMagma (magma G.magma H.magma)
+    ; idem = λ x → (G.idem , H.idem) <*> x
+    }
+  } where module G = IdempotentMagma G; module H = IdempotentMagma H
+
+alternativeMagma : AlternativeMagma a ℓ₁ → AlternativeMagma b ℓ₂ → AlternativeMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
+alternativeMagma G H = record
+  { isAlternativeMagma = record
+    { isMagma = Magma.isMagma (magma G.magma H.magma)
+    ; alter = (λ x y → G.leftAlternative , H.leftAlternative <*> x <*> y) 
+            , (λ x y → G.rightAlternative , H.rightAlternative <*> x <*> y)
+    }
+  } where module G = AlternativeMagma G; module H = AlternativeMagma H
+
+flexibleMagma : FlexibleMagma a ℓ₁ → FlexibleMagma b ℓ₂ → FlexibleMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
+flexibleMagma G H = record
+  { isFlexibleMagma = record
+    { isMagma = Magma.isMagma (magma G.magma H.magma)
+    ; flex = λ x y → (G.flex , H.flex) <*> x <*> y 
+    }
+  } where module G = FlexibleMagma G; module H = FlexibleMagma H
+
+medialMagma : MedialMagma a ℓ₁ → MedialMagma b ℓ₂ → MedialMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
+medialMagma G H = record
+  { isMedialMagma = record
+    { isMagma = Magma.isMagma (magma G.magma H.magma)
+    ; medial = λ x y u z → (G.medial , H.medial) <*> x <*> y <*> u <*> z
+    }
+  } where module G = MedialMagma G; module H = MedialMagma H
+
+semimedialMagma : SemimedialMagma a ℓ₁ → SemimedialMagma b ℓ₂ → SemimedialMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
+semimedialMagma G H = record
+  { isSemimedialMagma = record
+    { isMagma = Magma.isMagma (magma G.magma H.magma)
+    ; semiMedial = (λ x y z → G.leftSemimedial , H.leftSemimedial <*> x <*> y <*> z) 
+                 , ((λ x y z → G.rightSemimedial , H.rightSemimedial <*> x <*> y <*> z))
+    }
+  } where module G = SemimedialMagma G; module H = SemimedialMagma H
+
 semigroup : Semigroup a ℓ₁ → Semigroup b ℓ₂ → Semigroup (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
 semigroup G H = record
   { isSemigroup = record
@@ -313,3 +355,4 @@ loop M N = record
                , (M.identityʳ , N.identityʳ <*>_)
     }
   } where module M = Loop M; module N = Loop N
+   
