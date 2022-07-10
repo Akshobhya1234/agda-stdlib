@@ -306,6 +306,17 @@ idempotentSemiring K L = record
       }
   } where module K = IdempotentSemiring K;  module L = IdempotentSemiring L
 
+kleeneAlgebra : KleeneAlgebra a ℓ₁ → KleeneAlgebra b ℓ₂ → KleeneAlgebra (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
+kleeneAlgebra K L = record
+  { isKleeneAlgebra = record
+      { isIdempotentSemiring = IdempotentSemiring.isIdempotentSemiring (idempotentSemiring K.idempotentSemiring L.idempotentSemiring)
+      ; starExpansion = (λ x → (K.starLeftExpansion  , L.starLeftExpansion) <*> x) 
+                      , (λ x → (K.starRightExpansion  , L.starRightExpansion) <*> x)
+      ; fixedPoint = (λ a b x x₁ → (K.leftFixedPoint  , L.leftFixedPoint) <*> a <*> b <*> x <*> x₁) 
+                    , (λ a b x x₁ → (K.rightFixedPoint  , L.rightFixedPoint) <*> a <*> b <*> x <*> x₁)
+      }
+  } where module K = KleeneAlgebra K;  module L = KleeneAlgebra L
+
 ring : Ring a ℓ₁ → Ring b ℓ₂ → Ring (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
 ring R S = record
   { -_     = uncurry (λ x y → R.-_ x , S.-_ y)
