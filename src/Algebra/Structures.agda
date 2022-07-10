@@ -542,13 +542,32 @@ record IsCancellativeCommutativeSemiring (+ * : Op₂ A) (0# 1# : A) : Set (a �
 
   open IsCommutativeSemiring isCommutativeSemiring public
 
-
-record IsKleeneAlgebra (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ) where
+record IsIdempotentSemiring (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ) where
   field
-    isSemiring  : IsSemiring + * 0# 1#
-    +-idem      : Idempotent +
+    isSemiring     : IsSemiring + * 0# 1#
+    +-idem         : Idempotent +
 
   open IsSemiring isSemiring public
+
+record IsKleeneAlgebra (+ ∙ : Op₂ A) ( * : Op₁ A) (0# 1# : A) : Set (a ⊔ ℓ) where
+  field
+    isIdempotentSemiring  : IsIdempotentSemiring + ∙ 0# 1#
+    starExpansion         : StarExpansion 1# + ∙ *
+    fixedPoint            : FixedPoint + ∙ *
+
+  open IsIdempotentSemiring isIdempotentSemiring public
+
+  starLeftExpansion : StarLeftExpansion 1# + ∙ *
+  starLeftExpansion = proj₁ starExpansion
+
+  starRightExpansion : StarRightExpansion 1# + ∙ *
+  starRightExpansion = proj₂ starExpansion
+
+  leftFixedPoint : LeftFixedPoint + ∙ *
+  leftFixedPoint = proj₁ fixedPoint
+
+  rightFixedPoint : RightFixedPoint + ∙ *
+  rightFixedPoint = proj₂ fixedPoint
 
 record IsQuasiring (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ) where
   field
