@@ -117,7 +117,7 @@ alternativeMagma : AlternativeMagma a ℓ₁ → AlternativeMagma b ℓ₂ → A
 alternativeMagma G H = record
   { isAlternativeMagma = record
     { isMagma = Magma.isMagma (magma G.magma H.magma)
-    ; alter = (λ x y → G.leftAlternative , H.leftAlternative <*> x <*> y) 
+    ; alter = (λ x y → G.leftAlternative , H.leftAlternative <*> x <*> y)
             , (λ x y → G.rightAlternative , H.rightAlternative <*> x <*> y)
     }
   } where module G = AlternativeMagma G; module H = AlternativeMagma H
@@ -126,7 +126,7 @@ flexibleMagma : FlexibleMagma a ℓ₁ → FlexibleMagma b ℓ₂ → FlexibleMa
 flexibleMagma G H = record
   { isFlexibleMagma = record
     { isMagma = Magma.isMagma (magma G.magma H.magma)
-    ; flex = λ x y → (G.flex , H.flex) <*> x <*> y 
+    ; flex = λ x y → (G.flex , H.flex) <*> x <*> y
     }
   } where module G = FlexibleMagma G; module H = FlexibleMagma H
 
@@ -142,7 +142,7 @@ semimedialMagma : SemimedialMagma a ℓ₁ → SemimedialMagma b ℓ₂ → Semi
 semimedialMagma G H = record
   { isSemimedialMagma = record
     { isMagma = Magma.isMagma (magma G.magma H.magma)
-    ; semiMedial = (λ x y z → G.leftSemimedial , H.leftSemimedial <*> x <*> y <*> z) 
+    ; semiMedial = (λ x y z → G.leftSemimedial , H.leftSemimedial <*> x <*> y <*> z)
                  , ((λ x y z → G.rightSemimedial , H.rightSemimedial <*> x <*> y <*> z))
     }
   } where module G = SemimedialMagma G; module H = SemimedialMagma H
@@ -310,9 +310,9 @@ kleeneAlgebra : KleeneAlgebra a ℓ₁ → KleeneAlgebra b ℓ₂ → KleeneAlge
 kleeneAlgebra K L = record
   { isKleeneAlgebra = record
       { isIdempotentSemiring = IdempotentSemiring.isIdempotentSemiring (idempotentSemiring K.idempotentSemiring L.idempotentSemiring)
-      ; starExpansion = (λ x → (K.starLeftExpansion  , L.starLeftExpansion) <*> x) 
+      ; starExpansion = (λ x → (K.starLeftExpansion  , L.starLeftExpansion) <*> x)
                       , (λ x → (K.starRightExpansion  , L.starRightExpansion) <*> x)
-      ; fixedPoint = (λ a b x x₁ → (K.leftFixedPoint  , L.leftFixedPoint) <*> a <*> b <*> x <*> x₁) 
+      ; fixedPoint = (λ a b x x₁ → (K.leftFixedPoint  , L.leftFixedPoint) <*> a <*> b <*> x <*> x₁)
                     , (λ a b x x₁ → (K.rightFixedPoint  , L.rightFixedPoint) <*> a <*> b <*> x <*> x₁)
       }
   } where module K = KleeneAlgebra K;  module L = KleeneAlgebra L
@@ -366,4 +366,4 @@ loop M N = record
                , (M.identityʳ , N.identityʳ <*>_)
     }
   } where module M = Loop M; module N = Loop N
-   
+
