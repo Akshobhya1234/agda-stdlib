@@ -19,6 +19,8 @@ Highlights
 * Improved the `solve` tactic in `Tactic.RingSolver` to work in a much
   wider range of situations.
 
+- Added `⌊log₂_⌋` and `⌈log₂_⌉` on Natural Numbers.
+
 Bug-fixes
 ---------
 
@@ -809,6 +811,11 @@ Deprecated names
 New modules
 -----------
 
+* Algebraic structures when freely adding an identity element:
+```
+  Algebra.Construct.Add.Identity
+```
+
 * Operations for module-like algebraic structures:
   ```
   Algebra.Module.Core
@@ -833,7 +840,8 @@ New modules
   Algebra.Module.Morphism.Construct.Composition
   Algebra.Module.Morphism.Construct.Identity
   Algebra.Module.Morphism.Definitions
-  Algebra.Module.Morphism.Structures
+  Algebra.Module.Morphism.Structures  
+  Algebra.Module.Properties
   ```
 
 * Identity morphisms and composition of morphisms between algebraic structures:
@@ -986,10 +994,25 @@ New modules
   Data.Vec.Relation.Unary.Linked
   Data.Vec.Relation.Unary.Linked.Properties
   ```
+* Added Logarithm base 2 on Natural Numbers:
+  ```
+  Data.Nat.Logarithm.Core
+  Data.Nat.Logarithm
+  ```
 
+* Proofs of some axioms of linearity:
+  ```
+  Algebra.Module.Morphism.ModuleHomomorphism
+  Algebra.Module.Properties
+  ```
 
 Other minor changes
 -------------------
+
+* Added new proof to `Data.Maybe.Properties`
+```agda
+    <∣>-idem : Idempotent _<∣>_
+```
 
 * The module `Algebra` now publicly re-exports the contents of
   `Algebra.Structures.Biased`.
@@ -1064,16 +1087,6 @@ Other minor changes
   loop : Loop a ℓ₁ → Loop b ℓ₂ → Loop (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
   idempotentSemiring : IdempotentSemiring a ℓ₁ → IdempotentSemiring b ℓ₂ → 
                        IdempotentSemiring (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
-  idempotentMagma : IdempotentMagma a ℓ₁ → IdempotentMagma b ℓ₂ →
-                    IdempotentMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
-  alternativeMagma : AlternativeMagma a ℓ₁ → AlternativeMagma b ℓ₂ → 
-                     AlternativeMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
-  flexibleMagma : FlexibleMagma a ℓ₁ → FlexibleMagma b ℓ₂ → 
-                  FlexibleMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
-  medialMagma : MedialMagma a ℓ₁ → MedialMagma b ℓ₂ → MedialMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
-  semimedialMagma : SemimedialMagma a ℓ₁ → SemimedialMagma b ℓ₂ → 
-                    SemimedialMagma (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
-  kleeneAlgebra : KleeneAlgebra a ℓ₁ → KleeneAlgebra b ℓ₂ → KleeneAlgebra (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
  ```
 
 * Added new definition to `Algebra.Definitions`:
@@ -1088,9 +1101,15 @@ Other minor changes
   LeftInvertible  e _∙_ x = ∃[ x⁻¹ ] (x⁻¹ ∙ x) ≈ e
   RightInvertible e _∙_ x = ∃[ x⁻¹ ] (x ∙ x⁻¹) ≈ e
   Invertible      e _∙_ x = ∃[ x⁻¹ ] ((x⁻¹ ∙ x) ≈ e) × ((x ∙ x⁻¹) ≈ e)
-  Alternativeˡ _∙_ = ∀ x y  →  ((x ∙ x) ∙ y) ≈ (x ∙ (y ∙ y))
-  Alternativeʳ _∙_ = ∀ x y → (x ∙ (y ∙ y)) ≈ ((x ∙ y) ∙ y)
-  Alternative _∙_ = (Alternativeˡ _∙_ ) × ( Alternativeʳ _∙_)
+  StarRightExpansive e _+_ _∙_ _⁻* = ∀ x → (e + (x ∙ (x ⁻*))) ≈ (x ⁻*)
+  StarLeftExpansive e _+_ _∙_ _⁻* = ∀ x →  (e + ((x ⁻*) ∙ x)) ≈ (x ⁻*)
+  StarExpansive e _+_ _∙_ _* = (StarLeftExpansive e _+_ _∙_ _*) × (StarRightExpansive e _+_ _∙_ _*)
+  StarLeftDestructive _+_ _∙_ _* = ∀ a b x → (b + (a ∙ x)) ≈ x → ((a *) ∙ b) ≈ x
+  StarRightDestructive _+_ _∙_ _* = ∀ a b x → (b + (x ∙ a)) ≈ x → (b ∙ (a *)) ≈ x
+  StarDestructive _+_ _∙_ _* = (StarLeftDestructive _+_ _∙_ _*) × (StarRightDestructive _+_ _∙_ _*)
+  LeftAlternative _∙_ = ∀ x y  →  ((x ∙ x) ∙ y) ≈ (x ∙ (y ∙ y))
+  RightAlternative _∙_ = ∀ x y → (x ∙ (y ∙ y)) ≈ ((x ∙ y) ∙ y)
+  Alternative _∙_ = (LeftAlternative _∙_ ) × (RightAlternative _∙_)
   Flexible _∙_ = ∀ x y → ((x ∙ y) ∙ x) ≈ (x ∙ (y ∙ x))
   Medial _∙_ = ∀ x y u z → ((x ∙ y) ∙ (u ∙ z)) ≈ ((x ∙ u) ∙ (y ∙ z))
   LeftSemimedial _∙_ = ∀ x y z → ((x ∙ x) ∙ (y ∙ z)) ≈ ((x ∙ y) ∙ (x ∙ z))
@@ -1098,10 +1117,6 @@ Other minor changes
   Semimedial _∙_ = (LeftSemimedial _∙_) × (RightSemimedial _∙_)
   LeftBol _∙_ = ∀ x y z → (x ∙ (y ∙ (x ∙ z))) ≈ ((x ∙ (y ∙ z)) ∙ z )
   RightBol _∙_ = ∀ x y z → (((z ∙ x) ∙ y) ∙ x) ≈ (z ∙ ((x ∙ y) ∙ x))
-  StarRightExpansion e _+_ _∙_ _⁻* = ∀ x → (e + (x ∙ (x ⁻*))) ≈ (x ⁻*)
-  StarLeftExpansion e _+_ _∙_ _⁻* = ∀ x →  (e + ((x ⁻*) ∙ x)) ≈ (x ⁻*)
-  LeftFixedPoint _+_ _∙_ _⁻* = ∀ a b x → (b + (a ∙ x)) ≈ x → ((a ⁻*) ∙ b) ≈ x
-  RightFixedPoint _+_ _∙_ _⁻* = ∀ a b x → (b + (x ∙ a)) ≈ x → (b ∙ (a ⁻*)) ≈ x
   ```
 
 * Added new functions to `Algebra.Definitions.RawSemiring`:
@@ -1113,6 +1128,22 @@ Other minor changes
 * Added new proofs to `Algebra.Properties.CommutativeSemigroup`:
   ```
   interchange : Interchangable _∙_ _∙_
+  xy∙xx≈x∙yxx : ∀ x y → (x ∙ y) ∙ (x ∙ x) ≈ x ∙ (y ∙ (x ∙ x))
+  leftSemimedial : LeftSemimedial _∙_
+  rightSemimedial : RightSemimedial _∙_
+  middleSemimedial : ∀ x y z → (x ∙ y) ∙ (z ∙ x) ≈ (x ∙ z) ∙ (y ∙ x)
+  ```
+* Added new proofs to `Algebra.Properties.Semigroup`:
+  ```
+  leftAlternative : LeftAlternative _∙_
+  rightAlternative : RightAlternative _∙_
+  alternative : Alternative _∙_
+  flexible : Flexible _∙_
+  ```
+
+* Added new proofs to `Algebra.Properties.Ring`:
+  ```
+  -1*x≈-x : ∀ x → - 1# * x ≈ - x
   ```
 
 * Added new definitions to `Algebra.Structures`:
@@ -1123,21 +1154,18 @@ Other minor changes
   record IsQuasigroup (∙ \\ // : Op₂ A) : Set (a ⊔ ℓ)
   record IsLoop (∙ \\ // : Op₂ A) (ε : A) : Set (a ⊔ ℓ)
   record IsRingWithoutOne (+ * : Op₂ A) (-_ : Op₁ A) (0# : A) : Set (a ⊔ ℓ)
-  record IsKleeneAlgebra (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ)
-  record IsQuasiring (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ)
-  record IsNearring (+ * : Op₂ A) (0# 1# : A) (_⁻¹ : Op₁ A) : Set (a ⊔ ℓ)
+  record IsIdempotentSemiring (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ)
+  record IsKleeneAlgebra (+ * : Op₂ A) (⋆ : Op₁ A) (0# 1# : A) : Set (a ⊔ ℓ)
+  record IsQuasiring (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ) where
+  record IsNearring (+ * : Op₂ A) (0# 1# : A) (_⁻¹ : Op₁ A) : Set (a ⊔ ℓ) where
   record IsIdempotentMagma (∙ : Op₂ A) : Set (a ⊔ ℓ)
-  record IsAlternateMagma (∙ : Op₂ A) : Set (a ⊔ ℓ)
+  record IsAlternativeMagma (∙ : Op₂ A) : Set (a ⊔ ℓ)
   record IsFlexibleMagma (∙ : Op₂ A) : Set (a ⊔ ℓ)
   record IsMedialMagma (∙ : Op₂ A) : Set (a ⊔ ℓ)
   record IsSemimedialMagma (∙ : Op₂ A) : Set (a ⊔ ℓ)
   record IsLeftBolLoop (∙ \\ // : Op₂ A) (ε : A) : Set (a ⊔ ℓ)
   record IsRightBolLoop (∙ \\ // : Op₂ A) (ε : A) : Set (a ⊔ ℓ) 
   record IsMoufangLoop (∙ \\ // : Op₂ A) (ε : A) : Set (a ⊔ ℓ)
-  record IsIdempotentSemiring (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ)
-  record IsKleeneAlgebra (+ * : Op₂ A) ( ⁻* : Op₁ A) (0# 1# : A) : Set (a ⊔ ℓ)
-  record IsQuasiring (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ) where
-  record IsNearring (+ * : Op₂ A) (0# 1# : A) (_⁻¹ : Op₁ A) : Set (a ⊔ ℓ) where
   ```
   and the existing record `IsLattice` now provides
   ```
@@ -1351,6 +1379,13 @@ Other minor changes
 
   anyUpTo? : ∀ (P? : U.Decidable P) (v : ℕ) → Dec (∃ λ n → n < v × P n)
   allUpTo? : ∀ (P? : U.Decidable P) (v : ℕ) → Dec (∀ {n} → n < v → P n)
+
+  n≤1⇒n≡0∨n≡1 : n ≤ 1 → n ≡ 0 ⊎ n ≡ 1
+
+  2^n>0 : 2 ^ n > 0
+
+  n≡⌊n+n/2⌋ : n ≡ ⌊ n + n /2⌋
+  n≡⌈n+n/2⌉ : n ≡ ⌈ n + n /2⌉
   ```
 
 * Added new functions in `Data.Nat`:
@@ -1390,7 +1425,7 @@ Other minor changes
   ```agda
   ↥ᵘ-toℚᵘ : ↥ᵘ (toℚᵘ p) ≡ ↥ p
   ↧ᵘ-toℚᵘ : ↧ᵘ (toℚᵘ p) ≡ ↧ p
-  
+
   +-*-rawNearSemiring                 : RawNearSemiring 0ℓ 0ℓ
   +-*-rawSemiring                     : RawSemiring 0ℓ 0ℓ
   toℚᵘ-isNearSemiringHomomorphism-+-* : IsNearSemiringHomomorphism +-*-rawNearSemiring ℚᵘ.+-*-rawNearSemiring toℚᵘ
@@ -1484,6 +1519,8 @@ Other minor changes
     map f (map g h) ∘ assocʳ ≗ assocʳ ∘ map (map f g) h
   ```
 
+* Made `Map` public in `Data.Tree.AVL.IndexedMap`
+
 * Added new definitions in `Data.Vec.Base`:
   ```agda
   truncate : m ≤ n → Vec A n → Vec A m
@@ -1526,7 +1563,10 @@ Other minor changes
   map-reverse  : map f (reverse xs) ≡ reverse (map f xs)
   map-ʳ++      : map f (xs ʳ++ ys) ≡ map f xs ʳ++ map f ys
 
+  lookup-concat : lookup (concat xss) (combine i j) ≡ lookup (lookup xss i) j
+
   ⊛-is->>=    : fs ⊛ xs ≡ fs >>= flip map xs
+  lookup-⊛*   : lookup (fs ⊛* xs) (combine i j) ≡ (lookup fs i $ lookup xs j)
   ++-is-foldr : xs ++ ys ≡ foldr ((Vec A) ∘ (_+ n)) _∷_ ys xs
   []≔-++-↑ʳ   : (xs ++ ys) [ m ↑ʳ i ]≔ y ≡ xs ++ (ys [ i ]≔ y)
   unfold-ʳ++  : xs ʳ++ ys ≡ reverse xs ++ ys
@@ -1817,6 +1857,34 @@ Other minor changes
   lookup-transpose⁺ : ∀ n (ass : List⁺ (Stream A)) → lookup n (transpose⁺ ass) ≡ List⁺.map (lookup n) ass
   ```
 
+* Added new corollaries in `Data.List.Membership.Setoid.Properties`:
+  ```
+  ∈-++⁺∘++⁻ : ∀ {v} xs {ys} (p : v ∈ xs ++ ys) → [ ∈-++⁺ˡ , ∈-++⁺ʳ xs ]′ (∈-++⁻ xs p) ≡ p
+  ∈-++⁻∘++⁺ : ∀ {v} xs {ys} (p : v ∈ xs ⊎ v ∈ ys) → ∈-++⁻ xs ([ ∈-++⁺ˡ , ∈-++⁺ʳ xs ]′ p) ≡ p
+  ∈-++↔ : ∀ {v xs ys} → (v ∈ xs ⊎ v ∈ ys) ↔ v ∈ xs ++ ys
+  ∈-++-comm : ∀ {v} xs ys → v ∈ xs ++ ys → v ∈ ys ++ xs
+  ∈-++-comm∘++-comm : ∀ {v} xs {ys} (p : v ∈ xs ++ ys) → ∈-++-comm ys xs (∈-++-comm xs ys p) ≡ p
+  ∈-++↔++ : ∀ {v} xs ys → v ∈ xs ++ ys ↔ v ∈ ys ++ xs
+  ```
+
+* Exposed container combinator conversion functions from `Data.Container.Combinator.Properties` separate from their correctness proofs in `Data.Container.Combinator`:
+  ```
+  to-id      : F.id A → ⟦ id ⟧ A
+  from-id    : ⟦ id ⟧ A → F.id A
+  to-const   : (A : Set s) → A → ⟦ const A ⟧ B
+  from-const : (A : Set s) → ⟦ const A ⟧ B → A
+  to-∘       : (C₁ : Container s₁ p₁) (C₂ : Container s₂ p₂) → ⟦ C₁ ⟧ (⟦ C₂ ⟧ A) → ⟦ C₁ ∘ C₂ ⟧ A
+  from-∘     : (C₁ : Container s₁ p₁) (C₂ : Container s₂ p₂) → ⟦ C₁ ∘ C₂ ⟧ A → ⟦ C₁ ⟧ (⟦ C₂ ⟧ A)
+  to-×       : (C₁ : Container s₁ p₁) (C₂ : Container s₂ p₂) → ⟦ C₁ ⟧ A P.× ⟦ C₂ ⟧ A → ⟦ C₁ × C₂ ⟧ A
+  from-×     : (C₁ : Container s₁ p₁) (C₂ : Container s₂ p₂) → ⟦ C₁ × C₂ ⟧ A → ⟦ C₁ ⟧ A P.× ⟦ C₂ ⟧ A
+  to-Π       : (I : Set i) (Cᵢ : I → Container s p) → (∀ i → ⟦ Cᵢ i ⟧ A) → ⟦ Π I Cᵢ ⟧ A
+  from-Π     : (I : Set i) (Cᵢ : I → Container s p) → ⟦ Π I Cᵢ ⟧ A → ∀ i → ⟦ Cᵢ i ⟧ A
+  to-⊎       : (C₁ : Container s₁ p) (C₂ : Container s₂ p) → ⟦ C₁ ⟧ A S.⊎ ⟦ C₂ ⟧ A → ⟦ C₁ ⊎ C₂ ⟧ A
+  from-⊎     : (C₁ : Container s₁ p) (C₂ : Container s₂ p) → ⟦ C₁ ⊎ C₂ ⟧ A → ⟦ C₁ ⟧ A S.⊎ ⟦ C₂ ⟧ A
+  to-Σ       : (I : Set i) (C : I → Container s p) → (∃ λ i → ⟦ C i ⟧ A) → ⟦ Σ I C ⟧ A
+  from-Σ     : (I : Set i) (C : I → Container s p) → ⟦ Σ I C ⟧ A → ∃ λ i → ⟦ C i ⟧ A
+  ```
+
 NonZero/Positive/Negative changes
 ---------------------------------
 
@@ -2061,4 +2129,37 @@ This is a full list of proofs that have changed form to use irrelevant instance 
   ```agda
   Inverse⇒Injection : Inverse S T → Injection S T
   ↔⇒↣ : A ↔ B → A ↣ B
+  ```
+
+* Added a new isomorphism to `Data.Fin.Properties`:
+  ```agda
+  2↔Bool : Fin 2 ↔ Bool
+  ```
+
+* Added new isomorphisms to `Data.Unit.Polymorphic.Properties`:
+  ```agda
+  ⊤↔⊤* : ⊤ {ℓ} ↔ ⊤*
+  ```
+
+* Added new isomorphisms to `Data.Vec.N-ary`:
+  ```agda
+  Vec↔N-ary : ∀ n → (Vec A n → B) ↔ N-ary n A B
+  ```
+
+* Added new isomorphisms to `Data.Vec.Recursive`:
+  ```agda
+  lift↔ : ∀ n → A ↔ B → A ^ n ↔ B ^ n
+  Fin[m^n]↔Fin[m]^n : ∀ m n → Fin (m ^ n) ↔ Fin m Vec.^ n
+  ```
+
+* Added new functions to `Function.Properties.Inverse`:
+  ```agda
+  ↔-refl  : Reflexive _↔_
+  ↔-sym   : Symmetric _↔_
+  ↔-trans : Transitive _↔_
+  ```
+
+* Added new isomorphisms to `Function.Properties.Inverse`:
+  ```agda
+  ↔-fun : A ↔ B → C ↔ D → (A → C) ↔ (B → D)
   ```

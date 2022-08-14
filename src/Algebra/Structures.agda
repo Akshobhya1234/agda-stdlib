@@ -549,25 +549,25 @@ record IsIdempotentSemiring (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ) where
 
   open IsSemiring isSemiring public
 
-record IsKleeneAlgebra (+ ∙ : Op₂ A) ( * : Op₁ A) (0# 1# : A) : Set (a ⊔ ℓ) where
+record IsKleeneAlgebra (+ * : Op₂ A) (⋆ : Op₁ A) (0# 1# : A) : Set (a ⊔ ℓ) where
   field
-    isIdempotentSemiring  : IsIdempotentSemiring + ∙ 0# 1#
-    starExpansion         : StarExpansion 1# + ∙ *
-    fixedPoint            : FixedPoint + ∙ *
+    isIdempotentSemiring  : IsIdempotentSemiring + * 0# 1#
+    starExpansive         : StarExpansive 1# + * ⋆
+    starDestructive       : StarDestructive + * ⋆
 
   open IsIdempotentSemiring isIdempotentSemiring public
 
-  starLeftExpansion : StarLeftExpansion 1# + ∙ *
-  starLeftExpansion = proj₁ starExpansion
+  starExpansiveˡ : StarLeftExpansive 1# + * ⋆
+  starExpansiveˡ = proj₁ starExpansive
 
-  starRightExpansion : StarRightExpansion 1# + ∙ *
-  starRightExpansion = proj₂ starExpansion
+  starExpansiveʳ : StarRightExpansive 1# + * ⋆
+  starExpansiveʳ = proj₂ starExpansive
 
-  leftFixedPoint : LeftFixedPoint + ∙ *
-  leftFixedPoint = proj₁ fixedPoint
+  starDestructiveˡ : StarLeftDestructive + * ⋆
+  starDestructiveˡ = proj₁ starDestructive
 
-  rightFixedPoint : RightFixedPoint + ∙ *
-  rightFixedPoint = proj₂ fixedPoint
+  starDestructiveʳ : StarRightDestructive + * ⋆
+  starDestructiveʳ = proj₂ starDestructive
 
 record IsQuasiring (+ * : Op₂ A) (0# 1# : A) : Set (a ⊔ ℓ) where
   field

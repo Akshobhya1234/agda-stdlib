@@ -315,7 +315,7 @@ kleeneAlgebra K L = record
       ; fixedPoint = (λ a b x x₁ → (K.leftFixedPoint  , L.leftFixedPoint) <*> a <*> b <*> x <*> x₁)
                     , (λ a b x x₁ → (K.rightFixedPoint  , L.rightFixedPoint) <*> a <*> b <*> x <*> x₁)
       }
-  } where module K = KleeneAlgebra K;  module L = KleeneAlgebra L
+  } where module K = IdempotentSemiring K;  module L = IdempotentSemiring L
 
 ring : Ring a ℓ₁ → Ring b ℓ₂ → Ring (a ⊔ b) (ℓ₁ ⊔ ℓ₂)
 ring R S = record

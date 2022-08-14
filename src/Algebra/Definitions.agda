@@ -162,6 +162,24 @@ LeftDivides ∙ \\ = (LeftDividesˡ ∙ \\) × (LeftDividesʳ ∙ \\)
 RightDivides : Op₂ A → Op₂ A → Set _
 RightDivides ∙ // = (RightDividesˡ ∙ //) × (RightDividesʳ ∙ //)
 
+StarRightExpansive : A → Op₂ A → Op₂ A → Op₁ A → Set _
+StarRightExpansive e _+_ _∙_ _* = ∀ x → (e + (x ∙ (x *))) ≈ (x *)
+
+StarLeftExpansive : A → Op₂ A → Op₂ A → Op₁ A → Set _
+StarLeftExpansive e _+_ _∙_ _* = ∀ x →  (e + ((x *) ∙ x)) ≈ (x *)
+
+StarExpansive : A → Op₂ A → Op₂ A → Op₁ A → Set _
+StarExpansive e _+_ _∙_ _* = (StarLeftExpansive e _+_ _∙_ _*) × (StarRightExpansive e _+_ _∙_ _*)
+
+StarLeftDestructive : Op₂ A → Op₂ A → Op₁ A → Set _
+StarLeftDestructive _+_ _∙_ _* = ∀ a b x → (b + (a ∙ x)) ≈ x → ((a *) ∙ b) ≈ x
+
+StarRightDestructive : Op₂ A → Op₂ A → Op₁ A → Set _
+StarRightDestructive _+_ _∙_ _* = ∀ a b x → (b + (x ∙ a)) ≈ x → (b ∙ (a *)) ≈ x
+
+StarDestructive : Op₂ A → Op₂ A → Op₁ A → Set _
+StarDestructive _+_ _∙_ _* = (StarLeftDestructive _+_ _∙_ _*) × (StarRightDestructive _+_ _∙_ _*)
+
 LeftAlternative : Op₂ A → Set _
 LeftAlternative _∙_ = ∀ x y  →  ((x ∙ x) ∙ y) ≈ (x ∙ (x ∙ y))
 
@@ -191,20 +209,3 @@ LeftBol _∙_ = ∀ x y z → (x ∙ (y ∙ (x ∙ z))) ≈ ((x ∙ (y ∙ z)) �
 
 RightBol : Op₂ A → Set _
 RightBol _∙_ = ∀ x y z → (((z ∙ x) ∙ y) ∙ x) ≈ (z ∙ ((x ∙ y) ∙ x))
-StarRightExpansion : A → Op₂ A → Op₂ A → Op₁ A → Set _
-StarRightExpansion e _+_ _∙_ _* = ∀ x → (e + (x ∙ (x *))) ≈ (x *)
-
-StarLeftExpansion : A → Op₂ A → Op₂ A → Op₁ A → Set _
-StarLeftExpansion e _+_ _∙_ _* = ∀ x →  (e + ((x *) ∙ x)) ≈ (x *)
-
-StarExpansion : A → Op₂ A → Op₂ A → Op₁ A → Set _
-StarExpansion e _+_ _∙_ _* = (StarLeftExpansion e _+_ _∙_ _*) × (StarRightExpansion e _+_ _∙_ _*)
-
-LeftFixedPoint : Op₂ A → Op₂ A → Op₁ A → Set _
-LeftFixedPoint _+_ _∙_ _* = ∀ a b x → (b + (a ∙ x)) ≈ x → ((a *) ∙ b) ≈ x
-
-RightFixedPoint : Op₂ A → Op₂ A → Op₁ A → Set _
-RightFixedPoint _+_ _∙_ _* = ∀ a b x → (b + (x ∙ a)) ≈ x → (b ∙ (a *)) ≈ x
-
-FixedPoint : Op₂ A → Op₂ A → Op₁ A → Set _
-FixedPoint _+_ _∙_ _* = (LeftFixedPoint _+_ _∙_ _*) × (RightFixedPoint _+_ _∙_ _*)
