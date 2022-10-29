@@ -9,13 +9,15 @@
 module Effect.Monad.Partiality where
 
 open import Codata.Musical.Notation
+open import Effect.Functor
+open import Effect.Applicative
 open import Effect.Monad
 open import Data.Bool.Base using (Bool; false; true)
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Product as Prod hiding (map)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Function.Base
-open import Function.Equivalence using (_⇔_; equivalence)
+open import Function.Bundles using (_⇔_; mk⇔)
 open import Level using (Level; _⊔_)
 open import Relation.Binary as B hiding (Rel; _⇔_)
 import Relation.Binary.Properties.Setoid as SetoidProperties
@@ -38,15 +40,30 @@ data _⊥ (A : Set a) : Set a where
   now   : (x : A) → A ⊥
   later : (x : ∞ (A ⊥)) → A ⊥
 
+bind : A ⊥ → (A → B ⊥) → B ⊥
+bind (now x)   f = f x
+bind (later x) f = later (♯ (bind (♭ x) f))
+
+functor : RawFunctor {ℓ} _⊥
+functor = record { _<$>_ = map } where
+
+  map : (A → B) → A ⊥ → B ⊥
+  map f (now a) = now (f a)
+  map f (later d) = later (♯ map f (♭ d))
+
+
+applicative : RawApplicative {f = f} _⊥
+applicative = record
+  { rawFunctor = functor
+  ; pure = now
+  ; _<*>_ = λ mf mx → bind mf (λ f → bind mx (now ∘′ f))
+  }
+
 monad : RawMonad {f = f} _⊥
 monad = record
-  { return = now
-  ; _>>=_  = _>>=_
+  { rawApplicative = applicative
+  ; _>>=_  = bind
   }
-  where
-  _>>=_ : A ⊥ → (A → B ⊥) → B ⊥
-  now x   >>= f = f x
-  later x >>= f = later (♯ (♭ x >>= f))
 
 private module M {f} = RawMonad (monad {f})
 
@@ -875,7 +892,7 @@ module AlternativeEquality {a ℓ} where
   -- equivalence).
 
   correct : ∀ {S k x y} → RelP S k x y ⇔ Rel (Eq S) k x y
-  correct = equivalence sound complete
+  correct = mk⇔ sound complete
 
 ------------------------------------------------------------------------
 -- Another lemma
