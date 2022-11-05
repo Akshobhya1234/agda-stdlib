@@ -28,3 +28,9 @@ alternative = alternativeˡ , alternativeʳ
 
 flexible : Flexible _∙_
 flexible x y = assoc x y x
+
+------------------------------------------------------------------------------
+-- semigroup has Jordan identity
+
+xy∙xx≈x∙yxx : ∀ x y → (x ∙ y) ∙ (x ∙ x) ≈ x ∙ (y ∙ (x ∙ x))
+xy∙xx≈x∙yxx x y = assoc x y ((x ∙ x))

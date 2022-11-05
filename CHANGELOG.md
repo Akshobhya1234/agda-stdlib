@@ -1592,7 +1592,6 @@ Other minor changes
 * Added new proofs to `Algebra.Properties.CommutativeSemigroup`:
   ```agda
   interchange : Interchangable _∙_ _∙_
-  xy∙xx≈x∙yxx : ∀ x y → (x ∙ y) ∙ (x ∙ x) ≈ x ∙ (y ∙ (x ∙ x))
   leftSemimedial : LeftSemimedial _∙_
   rightSemimedial : RightSemimedial _∙_
   middleSemimedial : ∀ x y z → (x ∙ y) ∙ (z ∙ x) ≈ (x ∙ z) ∙ (y ∙ x)
@@ -1604,6 +1603,7 @@ Other minor changes
   rightAlternative : RightAlternative _∙_
   alternative : Alternative _∙_
   flexible : Flexible _∙_
+  xy∙xx≈x∙yxx : ∀ x y → (x ∙ y) ∙ (x ∙ x) ≈ x ∙ (y ∙ (x ∙ x))
   ```
 
 * Added new proofs to `Algebra.Properties.Ring`:
